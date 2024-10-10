@@ -396,6 +396,11 @@ const filtrosTienda = () => {
     inputColor.value = color
     pColor.textContent = color
 
+    inputColor.addEventListener('click', (e) => {
+      COLOR = e.target.value
+      filtrarColores()
+    })
+
     ulColores.appendChild(liColor)
     liColor.appendChild(divColor)
     liColor.appendChild(inputColor)
@@ -413,11 +418,6 @@ const filtrosTienda = () => {
       PRENDA.includes(copiaropa.prenda)
     )
     printRopa(filtradosPrendas)
-  })
-
-  ulColores.addEventListener('click', (e) => {
-    COLOR = e.target.value
-    filtrarColores()
   })
 
   btnFiltrar.addEventListener('click', allFilter)

@@ -138,10 +138,12 @@ a > img {
   background-color: var(--asc-color-3);
   color: var(--asc-color-1);
   border-radius: var(--asc-primary-br);
+  cursor: pointer;
 }
 
 .filtros > #boton-reset {
   margin: var(--asc-margin-l) 0px var(--asc-margin-l) var(--asc-margin-l);
+  cursor: pointer;
 }
 
 #productos {
