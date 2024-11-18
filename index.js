@@ -262,12 +262,13 @@ const main = document.querySelector('main')
 const divFiltros = document.createElement('div')
 divFiltros.classList.add('filtros')
 divFiltros.setAttribute('id', 'no-visible')
+const divSuggest = document.createElement('div')
 const seccionProductos = document.querySelector('#productos')
 seccionProductos.insertAdjacentElement('beforebegin', divFiltros)
+seccionProductos.insertAdjacentElement('beforebegin', divSuggest)
 
 // PINTAR BLOQUE SUGERENCIAS Y 3 PRODUCTOS ALEATORIOS
 const productosRandom = () => {
-  const divSuggest = document.createElement('div')
   const pSugerencias = document.createElement('p')
   const p = document.createElement('p')
   divSuggest.id = 'sugerencias'
@@ -275,18 +276,14 @@ const productosRandom = () => {
   p.className = 'our-suggest'
   p.textContent = 'Aquí te dejamos nuestras sugerencias...'
 
-  const productosSugeridos = []
-
-  for (let i = 0; i < 3; i++) {
-    const element = ROPA[Math.floor(Math.random() * ROPA.length)]
-    productosSugeridos.push(element)
-    console.log(productosSugeridos)
-  }
+  const productosSugeridos = [...ROPA]
+    .sort(() => (Math.random() > 0.5 ? 1 : -1))
+    .slice(0, 3)
+  //console.log(productosSugeridos)
   printRopa(productosSugeridos)
 
   divSuggest.appendChild(pSugerencias)
   divSuggest.appendChild(p)
-  seccionProductos.insertAdjacentElement('beforebegin', divSuggest)
 }
 
 // RESETEAR FILTROS
@@ -319,6 +316,8 @@ const allFilter = () => {
       filtrados.push(ropa)
     }
   }
+
+  divSuggest.innerHTML = ''
   seccionProductos.innerHTML = ''
   printRopa(filtrados)
   console.log(filtrados)
@@ -362,9 +361,6 @@ const filtrosTienda = () => {
   title.disabled = false
   title.select = true
   selectPrenda.appendChild(title)
-  const btnFiltrar = document.createElement('button')
-  btnFiltrar.textContent = 'Filtrar'
-  btnFiltrar.id = 'boton-filtrar'
   const buttonReset = document.createElement('button')
   buttonReset.textContent = 'Limpiar filtros'
   buttonReset.id = 'boton-reset'
@@ -398,7 +394,11 @@ const filtrosTienda = () => {
 
     inputColor.addEventListener('click', (e) => {
       COLOR = e.target.value
-      filtrarColores()
+      if (PRENDA == '' && (COLOR = e.target.value)) {
+        filtrarColores()
+      } else if (PRENDA !== '' && (COLOR = e.target.value)) {
+        allFilter()
+      }
     })
 
     ulColores.appendChild(liColor)
@@ -408,19 +408,22 @@ const filtrosTienda = () => {
   }
 
   divFiltros.appendChild(ulColores)
-  divFiltros.appendChild(btnFiltrar)
   divFiltros.appendChild(buttonReset)
 
   selectPrenda.addEventListener('change', (e) => {
     const copiaROPA = [...ROPA]
     PRENDA = e.target.value
-    const filtradosPrendas = copiaROPA.filter((copiaropa) =>
-      PRENDA.includes(copiaropa.prenda)
-    )
-    printRopa(filtradosPrendas)
-  })
 
-  btnFiltrar.addEventListener('click', allFilter)
+    if ((PRENDA = e.target.value) && COLOR == '') {
+      const filtradosPrendas = copiaROPA.filter((copiaropa) =>
+        PRENDA.includes(copiaropa.prenda)
+      )
+      printRopa(filtradosPrendas)
+      //console.log(filtradosPrendas)
+    } else if ((PRENDA = e.target.value) && COLOR !== '') {
+      allFilter()
+    }
+  })
 
   buttonReset.addEventListener('click', resetFiltros)
 }
@@ -441,7 +444,7 @@ const printRopa = (ropa) => {
     img.src = producto.imagen
     nombre.textContent = producto.nombre
     precio.textContent = `${producto.precio}€`
-    divProducto.classList.add(producto.prenda)
+    divProducto.className = 'product'
 
     seccionProductos.appendChild(divProducto)
     divProducto.appendChild(img)
